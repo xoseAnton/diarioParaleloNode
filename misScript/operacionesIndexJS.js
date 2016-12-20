@@ -4,23 +4,19 @@
  * en un "select".
  * @returns Lista de usuarios de la base de datos
  */
-function listarUsuario() {    
-    // Enviamos la solicitud ajax a la página del servidor
-    $.ajax({
-        url: "./miAjax/listarUsuarios.php",
-        type: 'POST',
-        dataType: 'json',        
-    }).done(function (usuarios){        
-        // Recorro todos los valores optenidos
+function listarUsuario() {        
+    // Solicito el evento para buscar usuarios en el servidor
+    conexionNode.emit("buscaUsuarios");    
+    // En la conexión NODE creada escucho un evento llamado "usuarios"   
+    conexionNode.on("usuarios", function (usuarios){
+         // Recorro todos los valores optenidos
         for (var i in usuarios) {
             $("#usuario").append("<option value='"+usuarios[i].id+"'>"+usuarios[i].nombre+"</option>");
         }
-    }).fail(function() {
-         alert("No su pudo listar los USUARIOS de la base de datos!");
-    });     
+    });
     
     // Añadimos un campo vacio
-    $("#usuario").append("<option value='' selected='true'></option>");    
+    $("#usuario").append("<option value='' selected='true'></option>");        
 }
 
 

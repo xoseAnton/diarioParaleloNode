@@ -3,9 +3,7 @@
 session_start();
 
 /*
- * 
- * Creo la clase para listar todos los DIARIOS
- * 
+ * Creo la clase para listar todos los DIARIOS 
  */
 
 // Insertamos la clase para utilizar la base de datos

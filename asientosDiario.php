@@ -5,6 +5,7 @@ session_start();
 // Establecemos por defecto la zona horaria
 date_default_timezone_set('Europe/Berlin');
 
+
 // Comprobamos que el usuario está identificado
 if (!isset($_SESSION['usuario'])) {    
     // Borramos los datos de la sesión
@@ -28,13 +29,17 @@ if (isset($_POST['desconectar'])) {
 <html>
     <head>
         <meta charset="UTF-8">
+        
         <!-- Primero incluimos los estilos de la página -->
         <link href="estilos/estiloAsientosDiario.css" rel="stylesheet" type="text/css">        
         <link href="estilos/estiloComunProyecto.css" rel="stylesheet" type="text/css">
+        
         <!-- Por último incluimos los Script que utilizaremos -->
+        <script src="nodejs/node_modules/socket.io-client/dist/socket.io.js" type="text/javascript"></script>
         <script src="misIncludes/jquery-3.1.1.js" type="text/javascript"></script>
         <script src="misScript/comunJS.js" type="text/javascript"></script>
         <script src="misScript/operacionesAsientoDiarioJS.js" type="text/javascript"></script>
+        
         <title>Listado de Asientos</title>       
     </head>
     <body>
@@ -51,8 +56,7 @@ if (isset($_POST['desconectar'])) {
         
         
          <!-- Zona de PROGRAMA -->        
-        <div id="zonaPrograma"> 
-            
+        <div id="zonaPrograma">     
             
             
             <!-- Zona para mostrar las acciones realizadas -->
@@ -70,8 +74,7 @@ if (isset($_POST['desconectar'])) {
                     </div>
             </div>
             
-            
-            
+                        
             <!-- Zona de CONTROL Y BUSQUEDAS -->
             <div id="zonaControl">
                 <form id="formularioBusqueda" name="formularioBusqueda" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
@@ -97,7 +100,7 @@ if (isset($_POST['desconectar'])) {
                                 <label>Asiento:</label>
                             </div>
                             <div>
-                                <input type="number" id="asiento" name="asiento" value="" min="1" max="9999" disabled />
+                                <input type="number" id="asiento" name="asiento" value="" min="1" max="9999" disabled title="Número de asiento"/>
                             </div>
                         </div>
 
@@ -119,7 +122,7 @@ if (isset($_POST['desconectar'])) {
                                 <label>Texto:</label>      
                             </div>
                             <div>
-                                <input type="text" id="textoBusca" name="textoBusca" value="" maxlength="50" disabled />
+                                <input type="text" id="textoBusca" name="textoBusca" value="" maxlength="50" disabled title="Texto de busqueda"/>
                             </div>
                         </div>
 
@@ -183,20 +186,20 @@ if (isset($_POST['desconectar'])) {
                     <div id="menuBotones">
                         <div id="menuBotones1">                                                         
                             <div id="botonListar" class="contenBotonMenu"> 
-                                <input type="button" id="listar" class="botonMenu" name="listar" value="Listar" title="Listamos con las opciones seleccionadas los asientos del diario "/>
+                                <input type="button" id="listar" class="botonMenu" name="listar" value="Listar" title="Listamos con las opciones seleccionadas los asientos del diario"/>
                             </div>
                             <div id="botonMostrarAcciones" class="contenBotonMenu"> 
-                                <input type="button" id="mostrarAcciones" class="botonMenu" name="mostrarAcciones" value="Acciones" />
+                                <input type="button" id="mostrarAcciones" class="botonMenu" name="mostrarAcciones" value="Acciones" title="Muestra la acciones realizadas por el usuario" />
                             </div>
                             <div id="botonMostrarImprimir" class="contenBotonMenu"> 
-                                <input type="button" id="mostrarImprimir" class="botonMenu" name="mostrarImprimir" value="Imprimir" />
+                                <input type="button" id="mostrarImprimir" class="botonMenu" name="mostrarImprimir" value="Imprimir" title="Imprimir el listado realizado" />
                             </div>
                             <?php
                             if (isset($_SESSION['usuario'])) {
                                 // Si el usuario tiene un rol adecuado enseñamos el botón administrar                                
                                 if ($_SESSION['usuario']['rol'] == 0 || $_SESSION['usuario']['rol'] == 1) {
                                     echo "<div id='botonAdministrar' class='contenBotonMenu'>";
-                                    echo "<input type='button' id='adminDiario' class='botonMenu' name='adminDiario' value='Administrar' />";
+                                    echo "<input type='button' id='adminDiario' class='botonMenu' name='adminDiario' value='Administrar' title='Administrar los diarios' />";
                                     echo "</div>";
                                 }
                             }
@@ -205,7 +208,7 @@ if (isset($_POST['desconectar'])) {
                         </div>
                         <div id = "menuBotones2">
                             <div id="botonDesconectar">
-                                <input type="submit" id="desconectar" class="botonMenu" name="desconectar" value="Desconectar" />
+                                <input type="submit" id="desconectar" class="botonMenu" name="desconectar" value="Desconectar" title="Salir de la aplicación" />
                             </div>  
                             <div class="cancelarFlotantes"></div>
                         </div>                        

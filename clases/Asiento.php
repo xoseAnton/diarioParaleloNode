@@ -3,8 +3,9 @@
 /*
  * Clase Asiento.
  * 
- * Como la clase Asiento tiene variables protected, implemento la función
- * jsonSerializable para mostrar esas variables cuando codifico con "json_encode"
+ * Como la clase Asiento tiene variables protected,
+ * implemento la función "jsonSerializable" para mostrar
+ * esas variables cuando codifico con "json_encode"
  * 
  */
 

@@ -1,14 +1,14 @@
-// Variable globales
-var opcionesConsulta;
+// Variables globales
+var opcionesConsulta;   // Contiene las opciones seleccionadas del listado
 var usuarios; // Contiene los usuarios definidos
 var miID;   // Contiene la variable de control del asiento seleccionado
 var datosGrabar; // Contienen los datos que se quieren modificar
 var pendienteGrabar = false;
-var asientoInicial;
+var asientoInicial; // Contiene un objeto con los datos iniciales del asiento que se modifica
 
 
 /*
- * Función introduce los usuarios activos definidos en la base de datos
+ * Función que introduce los usuarios activos definidos en la base de datos
  * en un "select". Si estamos identificados selecciona por defecto el usuario.
  * @returns Lista de usuarios de la base de datos
  */
@@ -35,28 +35,30 @@ function listarUsuarios() {
 
 
 /*
- * Función introduce los diarios activos definidos en la base de datos
+ * Función que introduce los diarios activos definidos en la base de datos
  * en un "select". Selecciona por defecto el último diario.
  * @returns Lista de los diarios activos de la base de datos.
  */
 function listarDiarios() {
-    $.ajax({
-        url: "./miAjax/listarDiarios.php",
-        type: 'POST',
-        dataType: 'json',        
-    }).done(function (diarios){        
+    
+    // Solicito el evento para buscar diarios en el servidor
+    conexionNode.emit("buscaDiarios");    
+    // En la conexión NODE creada escucho un evento llamado "diarios" con la respuesta   
+    conexionNode.on("diarios", function (diarios){        
         for (var i in diarios) {
             // Solo introducimos los diarios activos
-            if(diarios[i].cerrado == 1)
+            if (diarios[i].cerrado == 1)
                 $("#diario").append("<option value='" + diarios[i].diario + "'>" + diarios[i].diario + "</option>");
         }
-    }).fail(function() {
-         alert("No su pudo listar los DIARIOS de la base de datos!");
-    });    
+    });
+    
 }
 
 
-
+/*
+ * Función para guardar los datos introducidos en un asiento.
+ * @returns {undefined}
+ */
 function guardarDatosAsientos(){
     
     // Recuperamos los datos a guardar   
@@ -105,7 +107,7 @@ function guardarDatosAsientos(){
             
             // Pasados 2 segundo ocultamos el aviso y habilitamos los campos
             setTimeout(function () {                
-                //LLamamos a la función para desactivar campos
+                //LLamamos a la función para activar campos
                 activarCampos();
 
                 // Muestro el borde con otro color inidicando que fué modificado
@@ -176,11 +178,6 @@ function guardarDatosAsientos(){
     }).done(function (resultado){
         if (resultado.grabado == true) {
             
-            /* 
-             * Vaciamos el contenedor con el informe de los asientos para enseñar
-             * los nuevos.
-             */
-
             // Realizamos la nueva consulta para enseñar los datos nuevos
             informeAsiento(datosGrabar);
             
@@ -255,6 +252,7 @@ function establecerEventosFormularioBusqueda(){
     });
 }
 
+
 /*
  * Fución que valida los datos introducidos en la zona "Listar por:"
  * @returns {Boolean}
@@ -268,9 +266,10 @@ function validarDatosListar(){
     // Definimos el array JSON con los indices
     opcionesConsulta = {diario:[], asiento:[], fecha:[], texto:[], usuario:[], fechaModifica:[], horaModifica:[], buscaCerrados:[], buscaTodos:[], buscaActivos:[]};
     
+    
     // Valido el diario
     var miDiario = $("#diario").val();      
-    if (isNaN(miDiario) || miDiario == "" || miDiario == true) {        
+    if (isNaN(miDiario) || miDiario == "" || miDiario == true) {
         validado = false;   // Cambiamos la variable de control
         // Mostramos el error            
         $("#diario").focus().after("<span class='campoError'>Diario incorrecto!</span>");       
@@ -435,6 +434,7 @@ function validarDatosListar(){
     }
 }
 
+
 /*
  * Función para consultar en la base de datos los datos de los asientos.
  * @param {type} consulta
@@ -453,7 +453,7 @@ function listarAsientos(consulta){
         data: {opciones: consulta}
     }).done(function (asientos){
         
-        // Calculo el número de elementos recibido
+        // Calculo el número de elementos recibidos
         var numeroAsientos = Object.keys(asientos).length;
 
         if (numeroAsientos == 0) {
@@ -469,25 +469,14 @@ function listarAsientos(consulta){
             // Mostramos la leyenda de los datos adquiridos
             var tiempo = new Date();
             $("#legendAñadir").append("<div id='leyendaListado'>Listado de asientos del diario "+asientos[0].diario+
-                    "<label class='textoLengMostrar'> (actualizado "+tiempo.getHours()+":"+tiempo.getMinutes()+"  h)</label></div>");
+                    "<label class='textoLengMostrar'> (actualizado "+digitosFecha(tiempo.getHours())+":"+digitosFecha(tiempo.getMinutes())+"  h)</label></div>");
 
             /*
              * Para el caso en que se consiga respuesta de la página php, recorremos todo el array
              * y mostramos la información de cada asiento
-             * @type listarAsientos.operacionesAsientoDiarioJS_L231.asientos
              */
             for (var i in asientos) {
-                /*
-                 * Función para incluir dos digitos en el dia y fecha
-                 * @param {type} dato
-                 * @returns {listarAsientos.operacionesAsientoDiarioJS_L251.digitosFecha.digito|String}
-                 */
-                function digitosFecha(datoFecha){
-                    var digitos = new String(datoFecha);
-                    if(digitos.length < 2)
-                        digitos = '0'+datoFecha;
-                    return digitos;
-                    }
+                
                 // Recuperamos los datos:
                 var fechaAsiento = new Date(asientos[i].fecha);
                 
@@ -573,7 +562,6 @@ function listarAsientos(consulta){
 }
 
 
-
 /*
  * Función para crear elemento de aviso: "Datos pendientes grabar".
  * @returns {undefined}
@@ -614,6 +602,7 @@ function desactivarCampos() {
     // Cambiamos el color de fondo
     $(".contenAsiento, .mostrarFecha, .contenDatos").css("background-color", "#eee");
 }
+
 
 /*
  * Función que activa los campos para poder realizar cualquier otra petición.
@@ -659,6 +648,12 @@ function activarCampos() {
 }
 
 
+/*
+ * Función para mostrar todas las modificaciones realizadas en un asiento.
+ * 
+ * @param {type} consulta
+ * @returns {undefined}
+ */
 function informeAsiento(consulta){
     
     // Añadimos la imagen de "trabajando"
@@ -684,23 +679,11 @@ function informeAsiento(consulta){
              */
             var tiempo = new Date();
             $("#legendInfoAsientos").empty().append("<div class='leyendaInfoListado'>Informe del asiento " + infoAsiento[0].asiento + " / " + infoAsiento[0].diario +
-                    "<label class='textoLengMostrar'> (actualizado " + tiempo.getHours() + ":" + tiempo.getMinutes() + "  h)</label></div>"+
+                    "<label class='textoLengMostrar'> (actualizado " + digitosFecha(tiempo.getHours()) + ":" + digitosFecha(tiempo.getMinutes()) + "  h)</label></div>"+
                     "<input type='button' id='botonCerrarInfo' class='botonCerrar' name='botonCerrarConfir' value='' title='Cancelar las modificaciones realizadas en el asiento' />"+
                     "<div class='cancelarFlotantes'></div>"
                     );
-
-            /*
-             * Función para incluir dos digitos en el dia y fecha
-             * @param {type} dato
-             * @returns {digitos|String}
-             */
-            function digitosFecha(datoFecha) {
-                var digitos = new String(datoFecha);
-                if (digitos.length < 2)
-                    digitos = '0' + datoFecha;
-                return digitos;
-            }
-
+            
             // Variables generales para todos los detalles
             var asiento = infoAsiento[0].asiento;
             var diario = infoAsiento[0].diario;
@@ -973,6 +956,7 @@ $(function() {
         // Paramos la propagación indeseada del evento
         evento.stopPropagation();
     });
+        
         
      /* 
       * Establezco los eventos para el botón:

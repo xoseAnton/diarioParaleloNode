@@ -137,17 +137,7 @@ function activarCampos() {
 }
 
 
-/*
- * Función para incluir dos digitos en el dia y fecha
- * @param {type} dato
- * @returns {listarAsientos.operacionesAsientoDiarioJS_L251.digitosFecha.digito|String}
- */
-function digitosFecha(datoFecha) {
-    var digitos = new String(datoFecha);
-    if (digitos.length < 2)
-        digitos = '0' + datoFecha;
-    return digitos;
-}
+
 
 
 function mostraCampoConfirmacion(miID, texto){

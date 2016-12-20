@@ -7,8 +7,13 @@ var informeProyecto = new Array(["Realizado por: ", "Jose Antonio Mariño Outeir
                                 ["Versión de PHP: ", "5.6"]);
                                 
 
+
+// Creo una conexión al servidor NODE
+var conexionNode = io.connect("http://localhost:2500/");    
+
+
 // Creo una clase ASIENTO EN JAVASCRIPT para las modificaciones del asiento
-function AsientoInicial () {        
+function AsientoInicial () {
     // Atributos de la clase
     this.idInicial = "";
     this.situacion = "";
@@ -72,6 +77,7 @@ function AsientoInicial () {
     
 };
 
+
 /*
  * Función para mostrar la información del Proyecto
  * @returns {undefined}
@@ -130,6 +136,7 @@ function mostrarInformacion() {
     });    
 }
 
+
 /*
  * FUNCIÓN PARA MOSTRAR EL BORDE DE UN ELEMENTO
  */
@@ -169,6 +176,7 @@ function mostrarBordeContenBusqueda(idElemento){
     }
 }
 
+
 /*
  * FUNCIÓN PARA OCULTAR EL BORDE DEL CAMPO LISTADO
  */
@@ -178,6 +186,7 @@ function ocultarBordeContenBusqueda(idElemento){
     else
         $(idElemento).parents(".contenedorBusqueda").css("border", "2px solid purple");
 }
+
 
 /*
  * Función para mostrar las acciones realizadas en todas las páginas.
@@ -196,3 +205,18 @@ function mostrarAcciones() {
     });
     
 }
+
+
+/*
+ * Función para incluir dos digitos en el dia y fecha
+ * @param {type} dato
+ * @returns {listarAsientos.operacionesAsientoDiarioJS_L251.digitosFecha.digito|String}
+ */
+function digitosFecha(datoFecha) {
+    var digitos = new String(datoFecha);
+    if (digitos.length < 2)
+        digitos = '0' + datoFecha;
+    return digitos;
+}
+
+

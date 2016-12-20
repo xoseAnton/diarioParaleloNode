@@ -10,14 +10,18 @@ date_default_timezone_set('Europe/Berlin');
 <html>
     <head>
         <meta charset="UTF-8">
+        
         <!-- Primero incluimos los estilos de la página -->
         <link href="estilos/estiloIndex.css" rel="stylesheet" type="text/css">        
         <link href="estilos/estiloComunProyecto.css" rel="stylesheet" type="text/css">
+        
         <!-- Por último incluimos los Script que utilizaremos -->
+        <script src="nodejs/node_modules/socket.io-client/dist/socket.io.js" type="text/javascript"></script>
         <script src="misIncludes/jquery-3.1.1.js" type="text/javascript"></script>
         <script src="misIncludes/md5.min.js" type="text/javascript"></script>
         <script src="misScript/comunJS.js" type="text/javascript"></script>
-        <script src="misScript/operacionesIndexJS.js" type="text/javascript"></script>        
+        <script src="misScript/operacionesIndexJS.js" type="text/javascript"></script>     
+        
         <title>Acceso Diario Paralelo</title>        
     </head>
     
@@ -37,12 +41,10 @@ date_default_timezone_set('Europe/Berlin');
             <!-- Zona de control de Usuario -->
             <div id="zonaControlUsuario">
                 
-                <!-- Zona de MENSAJES -->
-                <div id="campoError"></div>
-                
                 <form id="formControlUsuarios" name="formControlUsuarios" method="post">
                     <fieldset>
                         <legend><span id="textoAcceso">Acceso - </span><span id="textoDiario">Diario Paralelo</span></legend>
+                        
                         <!-- Zona de USUARIO -->
                         <div class="campo">
                             <label>Usuario:</label><br/>                         
@@ -59,8 +61,10 @@ date_default_timezone_set('Europe/Berlin');
                         <div class="campo">                       
                             <input type="submit" id="botonEntrar" class="botonMenu" name="entrar" disabled value="Entrar" />
                         </div>
+                        
                     </fieldset>            
                 </form>            
+                
             </div>
         
     </body>
